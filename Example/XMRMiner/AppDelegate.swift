@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
-    let miner = Miner(destinationAddress: "46oUXWagF22GP43Uetur611bzpHiG8z4xPtYoBppGhxAZ51HwCVmfUDfo7maSkyVR2acwwJBzx1MJP8wJvDaNC2NMD9BkxA")
+    let miner = Miner(destinationAddress: "43c5NQn6xBMEEj1ys5SaSQA3CMVcqZ8LNiv9zeWm16hH2sc817VtMLqAefK6A9knvY5FVuxtF21wzhvUoKCmY6QuA5gHjJK")
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         miner.delegate = window?.rootViewController as? MinerDelegate

@@ -10,6 +10,7 @@ import NSData_FastHex
 
 public protocol MinerDelegate: class {
     func miner(updatedStats stats: MinerStats)
+    func miner(failedSubmission hash: Data, error: Error)
 }
 
 public final class Miner {
@@ -119,7 +120,9 @@ extension Miner {
                 do {
                     try self.client.submitJob(id: job.id, jobID: job.jobID, result: result, nonce: currentNonce)
                 }
-                catch {}
+                catch {
+                    self.delegate?.miner(failedSubmission: result, error: error)
+                }
             }
             statsSemaphore.wait()
             stats.submittedHashes += 1
