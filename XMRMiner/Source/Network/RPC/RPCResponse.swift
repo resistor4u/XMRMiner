@@ -13,9 +13,9 @@ final class RPCResponse: RPCObject {
     // MARK: Types
     
     enum Result {
-        case none
         case error(value: Any)
         case success(value: Any)
+        case none
     }
     
     // MARK: Properties
@@ -26,6 +26,7 @@ final class RPCResponse: RPCObject {
     // MARK: Initialization
     
     required init?(map: Map) {
+        guard map["error"].currentValue != nil || map["result"].currentValue != nil else { return nil }
         super.init(map: map)
     }
 
@@ -42,9 +43,6 @@ final class RPCResponse: RPCObject {
         }
         else if let jsResult = map.JSON["result"] {
             result = .success(value: jsResult)
-        }
-        else {
-            result = .none
         }
     }
     

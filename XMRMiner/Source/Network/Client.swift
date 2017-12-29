@@ -110,7 +110,7 @@ extension Client {
             return
         }
         
-        if json.keys.contains("result"), let response = Mapper<RPCResponse>().map(JSON: json) { // JSON-RPC Response
+        if let response = Mapper<RPCResponse>().map(JSON: json) { // JSON-RPC Response
             switch response.result {
             case .success(let result):
                 if let resultDict = result as? [String : Any], let jobJson = resultDict["job"], let job = Mapper<Job>().map(JSONObject: jobJson) { // JOB Response
@@ -119,10 +119,9 @@ extension Client {
             case .error(let error):
                 delegate?.client(self, failed: error)
             case .none:
-                // this really should not be happening. let's call the delegate with nil error for now
+                // this really should not happen. let's call the delegate with nil error for now
                 delegate?.client(self, failed: nil)
             }
-
         } else if let method = json["method"] as? String, let notification = Mapper<RPCNotification>().map(JSONObject: json) { // JSON-RPC Notification
             if method == "job", let job = Mapper<Job>().map(JSONObject: notification.params) {
                 delegate?.client(self, receivedJob: job)
