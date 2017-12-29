@@ -71,6 +71,10 @@ public final class Miner {
 }
 
 extension Miner: ClientDelegate {
+    func client(_ client: Client, failed: Any?) {
+        print("error: \(String(describing: failed))")
+    }
+    
     func client(_ client: Client, receivedJob: Job) {
         jobSemaphore.wait()
         job = receivedJob

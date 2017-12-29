@@ -12,6 +12,7 @@ import NSData_FastHex
 
 protocol ClientDelegate: class {
     func client(_ client: Client, receivedJob: Job)
+    func client(_ client: Client, failed: Any?)
 }
 
 final class Client {
@@ -115,11 +116,14 @@ extension Client {
                 if let resultDict = result as? [String : Any], let jobJson = resultDict["job"], let job = Mapper<Job>().map(JSONObject: jobJson) { // JOB Response
                     delegate?.client(self, receivedJob: job)
                 }
-            default:
-                break
+            case .error(let error):
+                delegate?.client(self, failed: error)
+            case .none:
+                // this really should not be happening. let's call the delegate with nil error for now
+                delegate?.client(self, failed: nil)
             }
-        }
-        else if let method = json["method"] as? String, let notification = Mapper<RPCNotification>().map(JSONObject: json) { // JSON-RPC Notification
+
+        } else if let method = json["method"] as? String, let notification = Mapper<RPCNotification>().map(JSONObject: json) { // JSON-RPC Notification
             if method == "job", let job = Mapper<Job>().map(JSONObject: notification.params) {
                 delegate?.client(self, receivedJob: job)
             }
