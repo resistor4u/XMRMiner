@@ -13,6 +13,7 @@ import NSData_FastHex
 protocol ClientDelegate: class {
     func client(_ client: Client, receivedJob: Job)
     func client(_ client: Client, failed: Any?)
+    func client(_ client: Client, assignedMinerID: String)
 }
 
 final class Client {
@@ -113,7 +114,12 @@ extension Client {
         if let response = Mapper<RPCResponse>().map(JSON: json) { // JSON-RPC Response
             switch response.result {
             case .success(let result):
-                if let resultDict = result as? [String : Any], let jobJson = resultDict["job"], let job = Mapper<Job>().map(JSONObject: jobJson) { // JOB Response
+                guard let resultDict = result as? [String : Any] else { delegate?.client(self, failed: nil); return }
+                if let minerId = resultDict["id"] as? String {
+                    delegate?.client(self, assignedMinerID: minerId)
+                }
+                
+                if let jobJson = resultDict["job"], let job = Mapper<Job>().map(JSONObject: jobJson) { // JOB Response
                     delegate?.client(self, receivedJob: job)
                 }
             case .error(let error):

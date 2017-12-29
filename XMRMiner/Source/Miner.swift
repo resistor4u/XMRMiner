@@ -74,6 +74,10 @@ public final class Miner {
 }
 
 extension Miner: ClientDelegate {
+    func client(_ client: Client, assignedMinerID: String) {
+        print("miner ID: \(assignedMinerID)")
+    }
+    
     func client(_ client: Client, failed: Any?) {
         print("error: \(String(describing: failed))")
     }
