@@ -17,7 +17,7 @@ class Job: Mappable {
     
     // MARK: Properties
     
-    private(set) var id = ""
+    private(set) var id:String? = nil
     private(set) var jobID = ""
     private(set) var blob = Data()
     private(set) var target: UInt64 = 0
@@ -53,7 +53,7 @@ class Job: Mappable {
         
         var targetStr = ""
         targetStr <- map["target"]
-        let targetLength = targetStr.characters.count
+        let targetLength = targetStr.count
         let targetData = NSData(hexString: targetStr) as Data
         if targetLength <= 8 {
             target = targetData.withUnsafeBytes { (ptr: UnsafePointer<UInt32>) -> UInt64 in
