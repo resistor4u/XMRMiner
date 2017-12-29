@@ -27,11 +27,13 @@ public final class Miner {
     var job: Job?
     
     var threads: [Thread] = []
+    let priority: QualityOfService
     
     let statsSemaphore = DispatchSemaphore(value: 1)
     var stats = MinerStats()
     
-    public init(host: String = "pool.supportxmr.com", port: Int = 3333, destinationAddress: String, clientIdentifier: String = "\(arc4random())") {
+    public init(host: String = "pool.supportxmr.com", port: Int = 3333, destinationAddress: String, clientIdentifier: String = "\(arc4random())", priority: QualityOfService = .default ) {
+        self.priority = priority
         let url: URL = {
             var components = URLComponents()
             components.scheme = "stratum+tcp"
@@ -56,7 +58,7 @@ public final class Miner {
             let t = Thread(block: mine)
             threads.append(t)
             t.name = "Mining Thread \(i+1)"
-            t.qualityOfService = .background
+            t.qualityOfService = priority
             t.start()
         }
     }
