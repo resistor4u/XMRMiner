@@ -32,11 +32,10 @@ public final class Miner {
     let statsSemaphore = DispatchSemaphore(value: 1)
     var stats = MinerStats()
     
-    let destinationAddress: String
+    var minerID: String?
     
     public init(host: String = "pool.supportxmr.com", port: Int = 3333, destinationAddress: String, clientIdentifier: String = "\(arc4random())", priority: QualityOfService = .default ) {
         self.priority = priority
-        self.destinationAddress = destinationAddress
         let url: URL = {
             var components = URLComponents()
             components.scheme = "stratum+tcp"
@@ -76,6 +75,7 @@ public final class Miner {
 extension Miner: ClientDelegate {
     func client(_ client: Client, assignedMinerID: String) {
         print("miner ID: \(assignedMinerID)")
+        minerID = assignedMinerID
     }
     
     func client(_ client: Client, failed: Any?) {
@@ -133,7 +133,7 @@ extension Miner {
             DispatchQueue.main.async {
                 do {
                     try self.client.submitJob(
-                        id: job.id ?? self.destinationAddress,
+                        id: job.id ?? self.minerID ?? "",
                         jobID: job.jobID,
                         result: result,
                         nonce: currentNonce)
