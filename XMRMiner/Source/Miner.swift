@@ -54,6 +54,7 @@ public final class Miner {
         let threadCount = max(min(ProcessInfo.processInfo.activeProcessorCount, threadLimit), 1)
         for i in 0 ..< threadCount {
             let t = Thread(block: mine)
+            threads.append(t)
             t.name = "Mining Thread \(i+1)"
             t.qualityOfService = .userInitiated
             t.start()
